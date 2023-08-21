@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 from salesgpt.chains import SalesConversationChain, StageAnalyzerChain
 from salesgpt.logger import time_logger
 from salesgpt.parsers import SalesConvoOutputParser
-from salesgpt.prompts import SALES_AGENT_TOOLS_PROMPT
+from salesgpt.prompts_cn import SALES_AGENT_TOOLS_PROMPT
 from salesgpt.stages import CONVERSATION_STAGES
 from salesgpt.templates import CustomPromptTemplateForTools
 from salesgpt.tools import get_tools, setup_knowledge_base
@@ -30,12 +30,12 @@ class SalesGPT(Chain, BaseModel):
     conversation_stage_dict: Dict = CONVERSATION_STAGES
 
     use_tools: bool = False
-    salesperson_name: str = "Ted Lasso"
-    salesperson_role: str = "Business Development Representative"
-    company_name: str = "Sleep Haven"
-    company_business: str = "Sleep Haven is a premium mattress company that provides customers with the most comfortable and supportive sleeping experience possible. We offer a range of high-quality mattresses, pillows, and bedding accessories that are designed to meet the unique needs of our customers."
-    company_values: str = "Our mission at Sleep Haven is to help people achieve a better night's sleep by providing them with the best possible sleep solutions. We believe that quality sleep is essential to overall health and well-being, and we are committed to helping our customers achieve optimal sleep by offering exceptional products and customer service."
-    conversation_purpose: str = "find out whether they are looking to achieve better sleep via buying a premier mattress."
+    salesperson_name: str = "小明同学"
+    salesperson_role: str = "香水推荐官"
+    company_name: str = "名创优品"
+    company_business: str = "名创优品是一家主打价格实惠、设计简约的快消品零售品牌，大师创香室的推出，让高品质香水从小众私享转为大众普及产品，让年轻消费者得以更轻松地获得开心、美好和治愈。"
+    company_values: str = "名创优品大师花艺香水颠覆传统品类，创新性地将花艺与香薰创新融合，定格花朵绽放这一最美好的瞬间，将香薰打造成生活艺术品，为消费者提供视觉和嗅觉的双重享受。"
+    conversation_purpose: str = "了解他们最近有什么喜欢的香水并根据你了解的特征推荐。"
     conversation_type: str = "call"
 
     def retrieve_conversation_stage(self, key):
