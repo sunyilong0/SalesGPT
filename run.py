@@ -1,3 +1,19 @@
+'''
+Author: sunyilong yilong.sun@miniso.com
+Date: 2023-08-22 10:24:22
+LastEditors: sunyilong yilong.sun@miniso.com
+LastEditTime: 2023-08-22 10:32:46
+FilePath: /SalesGPT/run.py
+Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+'''
+'''
+Author: 孙逸龙 yilong.sun@miniso.com
+Date: 2023-08-21 16:26:52
+LastEditors: sunyilong yilong.sun@miniso.com
+LastEditTime: 2023-08-22 10:24:21
+FilePath: \work\SalesGPT\run.py
+Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+'''
 import argparse
 
 import os
@@ -5,22 +21,26 @@ import json
 
 from salesgpt.agents import SalesGPT
 from langchain.chat_models import ChatOpenAI
-
+os.environ["OPENAI_API_TYPE"] = "azure"
+os.environ["OPENAI_API_BASE"] = "https://minisoopenai.openai.azure.com/"
+os.environ["OPENAI_API_KEY"] = "2719d64195484f14a3694f4259eae035"
 
 if __name__ == "__main__":
-
     # import your OpenAI key (put in your .env file)
-    with open('.env','r') as f:
-        env_file = f.readlines()
-    envs_dict = {key.strip("'") :value.strip("\n") for key, value in [(i.split('=')) for i in env_file]}
-    os.environ['OPENAI_API_KEY'] = envs_dict['OPENAI_API_KEY']
+    # with open('.env','r') as f:
+    #     env_file = f.readlines()
+    # envs_dict = {key.strip("'") :value.strip("\n") for key, value in [(i.split('=')) for i in env_file]}
+    # os.environ['OPENAI_API_KEY'] = envs_dict['OPENAI_API_KEY']
+    os.environ["OPENAI_API_TYPE"] = "azure"
+    os.environ["OPENAI_API_BASE"] = "https://minisoopenai.openai.azure.com/"
+    os.environ["OPENAI_API_KEY"] = "2719d64195484f14a3694f4259eae035"
 
     # Initialize argparse
     parser = argparse.ArgumentParser(description='Description of your program')
 
     # Add arguments
     parser.add_argument('--config', type=str, help='Path to agent config file', default='')
-    parser.add_argument('--verbose', type=bool, help='Verbosity', default=False)
+    parser.add_argument('--verbose', type=bool, help='Verbosity', default=True)
     parser.add_argument('--max_num_turns', type=int, help='Maximum number of turns in the sales conversation', default=10)
 
     # Parse arguments
@@ -28,11 +48,12 @@ if __name__ == "__main__":
 
     # Access arguments
     config_path = args.config
+    
     verbose = args.verbose
     max_num_turns = args.max_num_turns
 
-    llm = ChatOpenAI(temperature=0.2)
-    
+    # llm = ChatOpenAI(temperature=0.2)
+    llm = ChatOpenAI(temperature=0, model_kwargs={'engine':"minisoGPT3-5"})
     if config_path=='':
         print('No agent config specified, using a standard config')
         USE_TOOLS=True

@@ -15,6 +15,12 @@ from salesgpt.prompts import SALES_AGENT_TOOLS_PROMPT
 from salesgpt.stages import CONVERSATION_STAGES
 from salesgpt.templates import CustomPromptTemplateForTools
 from salesgpt.tools import get_tools, setup_knowledge_base
+import os
+from langchain.chat_models import ChatOpenAI
+os.environ["OPENAI_API_TYPE"] = "azure"
+os.environ["OPENAI_API_BASE"] = "https://minisoopenai.openai.azure.com/"
+os.environ["OPENAI_API_KEY"] = "2719d64195484f14a3694f4259eae035"
+llm = ChatOpenAI(temperature=0, model_kwargs={'engine':"minisoGPT3-5"})
 
 
 class SalesGPT(Chain, BaseModel):
@@ -96,7 +102,7 @@ class SalesGPT(Chain, BaseModel):
 
     # TO-DO change this override "run" override the "run method" in the SalesConversation chain!
     @time_logger
-    def _streaming_generator(self, model_name="gpt-3.5-turbo-0613"):
+    def _streaming_generator(self):
         """
         Sometimes, the sales agent wants to take an action before the full LLM output is available.
         For instance, if we want to do text to speech on the partial LLM output.
@@ -140,7 +146,9 @@ class SalesGPT(Chain, BaseModel):
             messages=messages,
             stop="<END_OF_TURN>",
             stream=True,
-            model=model_name,
+            model_kwargs={'engine':"minisoGPT3-5"},
+            # model=model_name,
+            engine="minisoGPT3-5"
         )
 
     def _call(self, inputs: Dict[str, Any]) -> None:
@@ -149,8 +157,11 @@ class SalesGPT(Chain, BaseModel):
         # Generate agent's utterance
         # if use tools
         if self.use_tools:
+            llm = ChatOpenAI(temperature=0, model_kwargs={'engine':"minisoGPT3-5"})
+            model_kwargs={'engine':"minisoGPT3-5"}
             ai_message = self.sales_agent_executor.run(
                 input="",
+                engine="minisoGPT3-5",
                 conversation_stage=self.current_conversation_stage,
                 conversation_history="\n".join(self.conversation_history),
                 salesperson_name=self.salesperson_name,
@@ -160,7 +171,8 @@ class SalesGPT(Chain, BaseModel):
                 company_values=self.company_values,
                 conversation_purpose=self.conversation_purpose,
                 conversation_type=self.conversation_type,
-            )
+                
+            )#model_kwargs={'engine':"minisoGPT3-5"}  给我推荐一个床垫
 
         else:
             # else
@@ -237,7 +249,12 @@ class SalesGPT(Chain, BaseModel):
                     "conversation_history",
                 ],
             )
-            llm_chain = LLMChain(llm=llm, prompt=prompt, verbose=verbose)
+            llm = ChatOpenAI(temperature=0, model_kwargs={'engine':"minisoGPT3-5"})
+            llm_chain = LLMChain(llm=llm, prompt=prompt, verbose=verbose,)
+            os.environ["OPENAI_API_TYPE"] = "azure"
+            os.environ["OPENAI_API_BASE"] = "https://minisoopenai.openai.azure.com/"
+            os.environ["OPENAI_API_KEY"] = "2719d64195484f14a3694f4259eae035"
+            
 
             tool_names = [tool.name for tool in tools]
 

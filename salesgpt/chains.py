@@ -23,10 +23,22 @@ class StageAnalyzerChain(LLMChain):
         )
         return cls(prompt=prompt, llm=llm, verbose=verbose)
 
+import os
+from langchain.chat_models import ChatOpenAI
+os.environ["OPENAI_API_TYPE"] = "azure"
+os.environ["OPENAI_API_BASE"] = "https://minisoopenai.openai.azure.com/"
+os.environ["OPENAI_API_KEY"] = "2719d64195484f14a3694f4259eae035"
+llm = ChatOpenAI(temperature=0, model_kwargs={'engine':"minisoGPT3-5"})
 
 class SalesConversationChain(LLMChain):
     """Chain to generate the next utterance for the conversation."""
-
+    import os
+    from langchain.chat_models import ChatOpenAI
+    os.environ["OPENAI_API_TYPE"] = "azure"
+    os.environ["OPENAI_API_BASE"] = "https://minisoopenai.openai.azure.com/"
+    os.environ["OPENAI_API_KEY"] = "2719d64195484f14a3694f4259eae035"
+    llm = ChatOpenAI(temperature=0, model_kwargs={'engine':"minisoGPT3-5"})
+    BaseLLM=llm
     @classmethod
     @time_logger
     def from_llm(
